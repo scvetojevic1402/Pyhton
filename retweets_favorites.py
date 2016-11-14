@@ -10,7 +10,7 @@ import thread
 
 
 parsing_start=time.time()
-con1 = pc.connect("host=hadoopslave1.ad.ufl.edu user=scvetojevic password=First132. port=5433 dbname=tgs7_new")
+con1 = pc.connect("host=hostname user=User password=Pass port=5433 dbname=db")
 con1.autocommit=True
 c1 = con1.cursor()
 c1.execute("SET CLIENT_ENCODING TO 'LATIN1';")
