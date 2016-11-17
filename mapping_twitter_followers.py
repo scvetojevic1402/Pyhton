@@ -31,6 +31,7 @@ def call_users_show_api_username(screen_name):
     return response
 def geocode(place):
     return geocoder.arcgis('{0}'.format(place.encode('ascii','ignore')))
+    #in next commit geocoder timeout will be handled too
 def get_all_followers_ids(twitter_username):
     followers_list=list()
     cursor = -1
