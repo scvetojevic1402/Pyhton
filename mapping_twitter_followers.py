@@ -73,29 +73,45 @@ def get_all_followers_ids(twitter_username):
         sys.exit()
     return followers_list
 
-def map_followers(username):
-    lats=[]
-    longs=[]
-    #xy=[]
-    for user_id in (get_all_followers_ids(username)):
-        #xy_pair=()
-        user_info = json.loads(call_users_show_api_user_id(user_id))
-        user_xy = geocode(user_info['location'])
-        #xy_pair+=(user_xy.lat,user_xy.lng)
-        #xy.append(xy_pair)
-        if user_xy.lat is not None and user_xy.lng is not None:
-            lats.append(user_xy.lat)
-            longs.append(user_xy.lng)
+def draw_basemap():
     m = Basemap(projection='mill',llcrnrlat=-90,urcrnrlat=90,llcrnrlon=-180,urcrnrlon=180,resolution='c')
     m.drawcoastlines()
     m.drawcountries()
     m.drawmapboundary()
-    x,y = m(longs, lats)
+    return m
+def map_followers_hexbin_heatmap(username):
+    lats=[]
+    longs=[]
+    for user_id in (get_all_followers_ids(username)):      
+        user_info = json.loads(call_users_show_api_user_id(user_id))
+        user_xy = geocode(user_info['location'])
+        if user_xy.lat is not None and user_xy.lng is not None:
+            lats.append(user_xy.lat)
+            longs.append(user_xy.lng)
+    m = draw_basemap()
+    x,y = m(longs, lats) 
     m.hexbin(array(x), array(y), gridsize=30, mincnt=1, cmap='summer')
     m.colorbar(location='bottom')
-    plt.title("Twitter Heatmap")
     plt.title("{} out of {} followers successfully geocoded of {}".format(len(lats),total_followers_count, username))
     plt.show()
+
+def map_followers_gclines(username):
+    m = draw_basemap()
+    x=0
+    try:
+        user_loc = geocode((json.loads(call_users_show_api_username(username)))['location'])        
+    except:
+        print("User's location can not be geocoded. Exiting...")
+        sys.exit()
+    for user_id in (get_all_followers_ids(username)):      
+        user_info = json.loads(call_users_show_api_user_id(user_id))
+        user_xy = geocode(user_info['location'])
+        if user_xy.lat is not None and user_xy.lng is not None:
+            m.drawgreatcircle(user_loc.lng,user_loc.lat, user_xy.lng, user_xy.lat,linewidth=2,color='b')
+            x=x+1
+    plt.title("{} out of {} followers successfully geocoded of {}".format(x,total_followers_count, username))
+    plt.show()
 #USAGE:
-#map_followers("TwitterUserName")
+#map_followers_hexbin_heatmap("TwitterUserName")
+#map_followers_gclines("TwitterUsername")
 
