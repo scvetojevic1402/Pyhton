@@ -151,8 +151,6 @@ class TweetJson2RelDB(object):
         conn_obj_a = pc.connect(self.conn_a)
         c=conn_obj_a.cursor(cursor_factory=pc.extras.DictCursor)
         sql = "select id from {0} order by 1 asc limit 100;".format(self.table_a)
-        #sql = "select id from {0} where user_id in (2831766417,247765560,363297675,173929959,1549095752,51035146) order by 1 asc;".format(self.table_a)
-        #sql = "select id from {0} where user_id in (1549095752,51035146) order by 1 asc;".format(self.table_a)
         c.execute(sql)
         ids=[]
         for row in c:
@@ -266,11 +264,7 @@ class TweetJson2RelDB(object):
             jobs.get()
         else:
             print "No new users"
-        try:
-            print datetime.datetime.now() - t0
-        except:
-            print("Neki eror")
-            pass
+        print datetime.datetime.now() - t0
 
 def main():
     conn_a="host=YourHost user=YourUser password=YourPass port=YourPort dbname=YourDB"
@@ -279,8 +273,10 @@ def main():
     table_a="paris_all"
     table_b = "json2relational_places"
     chunk_length= 10
-    klasa = TweetJson2RelDB(conn_a,conn_b,table_a,table_b,db_b,chunk_length,"id","tweet",FirstDegreeDict,"place")
-    klasa.parallel_insert()
+    tweet_place = TweetJson2RelDB(conn_a,conn_b,table_a,table_b,db_b,chunk_length,"id","tweet",FirstDegreeDict,"place")
+    tweet_place.parallel_insert()
+    tweet_user = TweetJson2RelDB(conn_a,conn_b,table_a,table_b,db_b,chunk_length,"id","tweet",FirstDegreeDict,"user")
+    tweet_user.parallel_insert()
 
 if __name__=="__main__":
     main()
