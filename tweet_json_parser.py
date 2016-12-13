@@ -5,6 +5,7 @@ import numpy as np
 import ujson as json
 from attrdict import AttrDict
 import psycopg2.extras
+from BeautifulSoup import BeautifulSoup
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -36,33 +37,8 @@ class json_housekeeping(object):
             if(str(b).find("'") != -1):
                 self.dict[a] = str(b).replace("'","''")
         #return self.dict
-    @staticmethod
-    def table_indexing(table):
-        if(table=='tweets_stream_ne_i'):
-            tbl_index=1
-        elif(table=='tweets_stream_ne_ii'):
-            tbl_index=2
-        elif(table=='tweets_stream_nw_i'):
-            tbl_index=3
-        elif(table=='tweets_stream_nw_ii'):
-            tbl_index=4
-        elif(table=='tweets_stream_nw_iii'):
-            tbl_index=5
-        elif(table=='tweets_stream_se'):
-            tbl_index=6
-        elif(table=='tweets_stream_sw'):
-            tbl_index=7
-        return tbl_index
-    @staticmethod
-    def db_indexing(db):
-        if(db=='twitter_geo_split'):
-            db_index=0
-        else:
-            db_index=db[len(db)-1:]
-        return db_index
     @staticmethod      
     def tweet_source(src_html_str):
-        from BeautifulSoup import BeautifulSoup
         return BeautifulSoup(src_html_str).find('a').getText()
 
 class Tweet(object):
@@ -114,7 +90,8 @@ class FirstDegreeDict(Tweet):
         return AttrDict(self.obj)
 
 class TweetJson2RelDB(object):
-    def __init__(self,conn_a,conn_b,table_a,table_b,db_b,chunk_length,id_col,tweet_col,ClassName,key_str): #note that connection string must always include the dbname
+    def __init__(self,conn_a,conn_b,table_a,table_b,db_b,chunk_length,id_col,tweet_col,ClassName,key_str): 
+        #note that connection string must always include the dbname
         self.conn_a=conn_a
         self.conn_b=conn_b
         self.table_a=table_a
