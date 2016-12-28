@@ -35,7 +35,7 @@ for row in c1:
     print(row["user_name"])
     response = oauth_req('https://api.twitter.com/1.1/followers/ids.json?cursor={0}&screen_name={1}&count=5000'.format(cursor,row["user_name"]),ACCESS_TOKEN, ACCESS_SECRET)
     followers = json.loads(response)
-    print(followers)
+    #print(followers)
     i = 0
     while(followers.has_key('errors') == True and str(followers['errors'][0]['message'])=='Rate limit exceeded'):
         print('Sleeping for 5 min...')
@@ -59,23 +59,28 @@ for row in c1:
         while(next_cursor!=0):
             response = oauth_req('https://api.twitter.com/1.1/followers/ids.json?cursor={0}&screen_name={1}&count=5000'.format(next_cursor,row["user_name"]),ACCESS_TOKEN, ACCESS_SECRET)
             followers = json.loads(response)
-            print(followers)
+            #print(followers)
             while(followers.has_key('errors') == True and str(followers['errors'][0]['message'])=='Rate limit exceeded'):
                 print('Sleeping for 5 min...')
                 time.sleep(300)
-                followers = json.loads(oauth_req('https://api.twitter.com/1.1/followers/ids.json?cursor={0}&screen_name={1}&count=5000'.format(cursor,row["user_name"]),ACCESS_TOKEN, ACCESS_SECRET))
+                followers = json.loads(oauth_req('https://api.twitter.com/1.1/followers/ids.json?cursor={0}&screen_name={1}&count=5000'.format(next_cursor,row["user_name"]),ACCESS_TOKEN, ACCESS_SECRET))
                 print(followers)
             next_cursor = followers['next_cursor']
             for id in followers['ids']:
                 sql = "INSERT INTO FOLLOWERS(USER_ID,FOLLOWER_ID) VALUES ({0},{1})".format(row["user_id"],id)
                 c2.execute(sql)
                 i=i+1
-                if(i%1000==0):
+                if(i%10000==0):
                     print(i)
-        #print(i)
         conn.commit()
     else:
         sql = "INSERT INTO FOLLOWERS(USER_ID,FOLLOWER_ID) VALUES ({0},{1})".format(row["user_id"],0)
         c2.execute(sql)
         conn.commit()
         print("Profile private or deleted")
+c1.close()
+c2.close()
+conn.close()
+         
+         
+
