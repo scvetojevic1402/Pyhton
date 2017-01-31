@@ -9,3 +9,7 @@ sudo easy_install line_profiler
 @profile
 def main():...
 Usage: kernprof -l -v script.py
+
+
+FOR SEARCHES ALWAYS USE SETS!!!
+MUCH FASTER THAN BISECT, NUMPY.SEARCHSORTED OR A CUSTOM DEFINED BINARY SEARCH FUNCTION!!!
