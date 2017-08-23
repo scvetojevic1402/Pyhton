@@ -19,17 +19,9 @@ def almostIncreasingSequence(sequence):
         if a<-100000 or a>100000:
             return False
     for i in range(0,len(sequence)):
-        if i == 0 or i==(len(sequence)-1):
+        if i == 0 or i==(len(sequence)-1) or sequence[i]<=sequence[i-1] or sequence[i]>=sequence[i+1]:
             num = sequence.pop(i)
-            #print i, num
             if sequence==sorted(sequence) and len(sequence)==len(set(sequence)): 
                 return True
-            sequence.insert(i,num)
-        elif sequence[i]<=sequence[i-1] or sequence[i]>=sequence[i+1]:
-            num = sequence.pop(i)
-            #print num
-            if sequence==sorted(sequence) and len(sequence)==len(set(sequence)): 
-                return True
-            sequence.insert(i,num)
-        
+            sequence.insert(i,num) 
     return False
