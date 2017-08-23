@@ -14,49 +14,22 @@
 #You can remove 3 from the array to get the strictly increasing sequence [1, 2]. 
 #Alternately, you can remove 2 to get the strictly increasing sequence [1, 3].
 
-def mergeSort(alist):
-    if len(alist)>1:
-        mid = len(alist)//2
-        lefthalf = alist[:mid]
-        righthalf = alist[mid:]
-
-        mergeSort(lefthalf)
-        mergeSort(righthalf)
-
-        i=0
-        j=0
-        k=0
-        while i < len(lefthalf) and j < len(righthalf):
-            if lefthalf[i] < righthalf[j]:
-                alist[k]=lefthalf[i]
-                i=i+1
-            else:
-                alist[k]=righthalf[j]
-                j=j+1
-            k=k+1
-
-        while i < len(lefthalf):
-            alist[k]=lefthalf[i]
-            i=i+1
-            k=k+1
-
-        while j < len(righthalf):
-            alist[k]=righthalf[j]
-            j=j+1
-            k=k+1
-
 def almostIncreasingSequence(sequence):
-    ind=0
     for a in sequence:
         if a<-100000 or a>100000:
-            break
-    n=0
+            return False
     for i in range(0,len(sequence)):
-        s=list(sequence)
-        s.pop(i)
-        p = list(s)
-        mergeSort(s)
-        if p==s and len(p)==len(set(p)):
-            print sequence[i],p
-            return True
+        if i == 0 or i==(len(sequence)-1):
+            num = sequence.pop(i)
+            print i, num
+            if sequence==sorted(sequence) and len(sequence)==len(set(sequence)): 
+                return True
+            sequence.insert(i,num)
+        elif sequence[i]<=sequence[i-1] or sequence[i]>=sequence[i+1]:
+            num = sequence.pop(i)
+            #print num
+            if sequence==sorted(sequence) and len(sequence)==len(set(sequence)): 
+                return True
+            sequence.insert(i,num)
+        
     return False
