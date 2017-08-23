@@ -21,7 +21,7 @@ def almostIncreasingSequence(sequence):
     for i in range(0,len(sequence)):
         if i == 0 or i==(len(sequence)-1):
             num = sequence.pop(i)
-            print i, num
+            #print i, num
             if sequence==sorted(sequence) and len(sequence)==len(set(sequence)): 
                 return True
             sequence.insert(i,num)
